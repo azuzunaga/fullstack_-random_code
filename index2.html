@@ -81,16 +81,18 @@
           //   map: map,
           //   title: `${event.latLng}`
           // });
-
-          this.calculateAndDisplayRoute(event.latLng);
+          if (this.coordinates.length > 1) {
+            this.calculateAndDisplayRoute();
+          }
         };
 
-        ClickEventHandler.prototype.calculateAndDisplayRoute = function(latLng) {
+        ClickEventHandler.prototype.calculateAndDisplayRoute = function() {
+          const lastCoord = this.coordinates.length - 1
           const me = this;
           this.directionsService.route({
             origin: this.coordinates[0].location,
-            waypoints: this.coordinates.slice(1, this.coordinates.length - 1),
-            destination: latLng,
+            waypoints: this.coordinates.slice(1, lastCoord),
+            destination: this.coordinates[lastCoord].location,
             travelMode: 'WALKING'
           }, function(response, status) {
             if (status === 'OK') {
@@ -101,6 +103,37 @@
             }
           });
         };
+
+        // function CenterControl(controlDiv, map) {
+        //
+        //   // Set CSS for the control border.
+        //   var controlUI = document.createElement('div');
+        //   controlUI.style.backgroundColor = '#fff';
+        //   controlUI.style.border = '2px solid #fff';
+        //   controlUI.style.borderRadius = '3px';
+        //   controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        //   controlUI.style.cursor = 'pointer';
+        //   controlUI.style.marginBottom = '22px';
+        //   controlUI.style.textAlign = 'center';
+        //   controlUI.title = 'Click to remove last waypoint';
+        //   controlDiv.appendChild(controlUI);
+        //
+        //   // Set CSS for the control interior.
+        //   var controlText = document.createElement('div');
+        //   controlText.style.color = 'rgb(25,25,25)';
+        //   controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        //   controlText.style.fontSize = '16px';
+        //   controlText.style.lineHeight = '38px';
+        //   controlText.style.paddingLeft = '5px';
+        //   controlText.style.paddingRight = '5px';
+        //   controlText.innerHTML = 'Undo';
+        //   controlUI.appendChild(controlText);
+        //
+        //   // Setup the click event listeners: simply set the map to Chicago.
+        //   controlUI.addEventListener('click', function() {
+        //     map.setCenter(chicago);
+        //   });
+        // }
       </script>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAFXbFVTOD9SL8fn7R_URvrBzkRW3AEOo&libraries=places&callback=initMap"
