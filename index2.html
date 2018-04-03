@@ -30,8 +30,7 @@
   <body>
     <div id="map"></div>
     <script>
-      var map;
-      var chicago = {lat: 41.85, lng: -87.65};
+      const origin = {lat: 41.441, lng: -72.777};
 
       /**
       * The CenterControl adds a control to the map that recenters the map on
@@ -66,7 +65,7 @@
 
       // Setup the click event listeners: simply set the map to Chicago.
       controlUI.addEventListener('click', function() {
-        map.setCenter(chicago);
+        map.setCenter(origin);
       });
 
       }
