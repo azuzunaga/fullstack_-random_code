@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>POI Click Event</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .title {
+        font-weight: bold;
+      }
+      #infowindow-content {
+        display: none;
+      }
+      #map #infowindow-content {
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="infowindow-content">
+      <img id="place-icon" src="" height="16" width="16">
+      <span id="place-name"  class="title"></span><br>
+      Place ID <span id="place-id"></span><br>
+      <span id="place-address"></span>
+    </div>
+    <div>
+      <script>
+        function initMap() {
+          const origin = {lat: 41.441, lng: -72.777};
+
+          const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: origin
+          });
+          const clickHandler = new ClickEventHandler(map);
+        }
+
+        /**
+         * @constructor
+         */
+        const ClickEventHandler = function(map) {
+          this.map = map;
+          this.directionsService = new google.maps.DirectionsService;
+          this.directionsDisplay = new google.maps.DirectionsRenderer;
+          this.directionsDisplay.setMap(map);
+          // this.placesService = new google.maps.places.PlacesService(map);
+          this.infowindow = new google.maps.InfoWindow;
+          this.infowindowContent = document.getElementById('infowindow-content');
+          this.infowindow.setContent(this.infowindowContent);
+
+          // Listen for clicks on the map.
+          this.map.addListener('click', this.handleClick.bind(this));
+
+          // Create an array to store each click-event coordinate
+          this.coordinates = [];
+        };
+
+        ClickEventHandler.prototype.handleClick = function(event) {
+          console.log('You clicked on: ' + event.latLng);
+
+          // store each coordinate as an object so it can later be used as a waypoint
+          this.coordinates.push({
+            location: event.latLng,
+            stopover: true,
+          });
+
+          // const marker = new google.maps.Marker({
+          //   position: event.latLng,
+          //   map: map,
+          //   title: `${event.latLng}`
+          // });
+
+          this.calculateAndDisplayRoute(event.latLng);
+        };
+
+        ClickEventHandler.prototype.calculateAndDisplayRoute = function(latLng) {
+          const me = this;
+          this.directionsService.route({
+            origin: this.coordinates[0].location,
+            waypoints: this.coordinates.slice(1, this.coordinates.length - 1),
+            destination: latLng,
+            travelMode: 'WALKING'
+          }, function(response, status) {
+            if (status === 'OK') {
+              directionsDisplay.setOptions({ preserveViewport: true });
+              me.directionsDisplay.setDirections(response);
+            } else {
+              window.alert('Directions request failed due to ' + status);
+            }
+          });
+        };
+      </script>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAFXbFVTOD9SL8fn7R_URvrBzkRW3AEOo&libraries=places&callback=initMap"
+        async defer></script>
+  </body>
+</html>
