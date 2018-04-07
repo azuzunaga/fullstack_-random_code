@@ -72,7 +72,7 @@ const ClickEventHandler = function(map) {
 
   // Create an array to store each click-event coordinate
   this.coordinates = [];
-};
+  };
 
 ClickEventHandler.prototype.handleClick = function(event) {
   console.log('You clicked on: ' + event.latLng);
@@ -89,17 +89,21 @@ ClickEventHandler.prototype.handleClick = function(event) {
 };
 
 ClickEventHandler.prototype.calculateAndDisplayRoute = function() {
+  // window.coordinates = this.coordinates;
   const lastCoord = this.coordinates.length - 1;
   const me = this;
   this.directionsService.route({
     origin: this.coordinates[0].location,
     waypoints: this.coordinates.slice(1, lastCoord),
     destination: this.coordinates[lastCoord].location,
-    travelMode: 'WALKING'
+    travelMode: 'BICYCLING'
   }, function(response, status) {
     if (status === 'OK') {
+      const polyLine = response.routes[0].overview_polyline;
+
       me.directionsDisplay.setOptions({ preserveViewport: true });
       me.directionsDisplay.setDirections(response);
+      console.log('New polyline:', polyLine);
     } else {
       window.alert('Directions request failed due to ' + status);
     }
