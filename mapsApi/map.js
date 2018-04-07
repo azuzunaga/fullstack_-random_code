@@ -89,7 +89,6 @@ ClickEventHandler.prototype.handleClick = function(event) {
 };
 
 ClickEventHandler.prototype.calculateAndDisplayRoute = function() {
-  // window.coordinates = this.coordinates;
   const lastCoord = this.coordinates.length - 1;
   const me = this;
   this.directionsService.route({
